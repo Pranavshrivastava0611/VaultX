@@ -1,8 +1,8 @@
 import  React from 'react'
 import { View,Text } from 'react-native'
 
-export default function MainScreen(){
+export default function MainSettingScreen(){
     return <View>
-        <Text>Main Screen</Text>
+        <Text>settings Screen</Text>
     </View>
 }
