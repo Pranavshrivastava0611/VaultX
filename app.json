@@ -9,12 +9,19 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow hd-wallet to use Face ID for authentication"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "permissions": ["USE_BIOMETRIC", "USE_FINGERPRINT"],
+      "config": {
+        "googleServicesFile": "./google-services.json"
       },
       "edgeToEdgeEnabled": true
     },

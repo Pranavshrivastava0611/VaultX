@@ -11,8 +11,8 @@ import bs58 from 'bs58';
 export const generateWallet = async () => {
   try {
     // Step 1: Generate 24-word mnemonic
-    const mnemonic = bip39.generateMnemonic(256); // 24-word phrase
-    // await SecureStore.setItemAsync("wallet_mnemonic", mnemonic);
+    const mnemonic = bip39.generateMnemonic(128); 
+    await SecureStore.setItemAsync("wallet_mnemonic", mnemonic);
 
     // Step 2: Convert mnemonic to seed buffer
     const seed = await bip39.mnemonicToSeed(mnemonic);

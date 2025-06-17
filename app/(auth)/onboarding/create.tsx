@@ -9,29 +9,45 @@ export default function CreatePinScreen() {
   const [pinInput, setPinInput] = useState('');
   const router = useRouter();
 
-  // Called when user presses a numpad button
 
-  useEffect(()=>{
-    const checkForTheSeed = async ()=>{
-      const password = await SecureStore.getItemAsync("wallet_pin");
-      if(password) router.canGoBack();
+useEffect(() => {
+  const checkForExistingData = async () => {
+    try {
+      const seed = await SecureStore.getItemAsync("wallet_mnemonic");
+      const pin = await SecureStore.getItemAsync("wallet_pin");
+
+      if (seed && pin) {
+        Alert.alert(
+          "Already Set",
+          "Your wallet and PIN are already set.",
+          [
+            {
+              text: "Go to Wallet",
+              onPress: () => router.replace("/(auth)/onboarding/seed")
+            }
+          ],
+          { cancelable: false }
+        );
+      }
+    } catch (err) {
+      console.error("Error checking existing seed/pin:", err);
     }
+  };
 
-    checkForTheSeed();
-  },[]);
+  checkForExistingData();
+}, []);
+
   const handleInput = (digit: string) => {
     if (pinInput.length < 6) {
       setPinInput(pinInput + digit);
     }
   };
 
-  // Called when user presses backspace
   const handleBackspace = () => {
     setPinInput(pinInput.slice(0, -1));
   };
 
-  // Called when user finishes entering 6 digits
-  React.useEffect(() => {
+  useEffect(() => {
     if (pinInput.length === 6) {
       if (step === 'set') {
         setTempPin(pinInput);
@@ -41,9 +57,11 @@ export default function CreatePinScreen() {
         if (pinInput === tempPin) {
           SecureStore.setItemAsync('wallet_pin', pinInput);
           Alert.alert('Success', 'PIN set successfully!');
-          router.push('/(auth)/onboarding/seed'); 
+          setTimeout(() => {
+            router.push('/(auth)/onboarding/seed');
+          }, 500);
         } else {
-          Alert.alert('Mismatch', 'PIN does not match. Try again.');
+          Alert.alert('Mismatch', 'PINs did not match. Try again.');
           setPinInput('');
           setStep('set');
         }
@@ -51,18 +69,12 @@ export default function CreatePinScreen() {
     }
   }, [pinInput]);
 
-  // Display PIN digits as dots
   const renderPinDots = () => {
-    const dots = [];
-    for (let i = 0; i < 6; i++) {
-      dots.push(
-        <View key={i} style={[styles.dot, i < pinInput.length && styles.filledDot]} />
-      );
-    }
-    return dots;
+    return Array.from({ length: 6 }).map((_, i) => (
+      <View key={i} style={[styles.dot, i < pinInput.length && styles.filledDot]} />
+    ));
   };
 
-  // Render a single numpad button
   const NumButton = ({ digit }: { digit: string }) => (
     <TouchableOpacity
       style={styles.numButton}
@@ -110,14 +122,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '600',
-    marginBottom: 40,
+    marginBottom: 32,
     color: '#111827',
+    textAlign: 'center',
   },
   pinContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '60%',
-    marginBottom: 60,
+    marginBottom: 48,
   },
   dot: {
     width: 20,
@@ -135,10 +148,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   numButton: {
     width: '30%',
-    aspectRatio: 1, // square buttons
+    aspectRatio: 1,
     backgroundColor: '#E0E7FF',
     borderRadius: 12,
     justifyContent: 'center',
