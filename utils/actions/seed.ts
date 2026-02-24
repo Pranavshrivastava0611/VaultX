@@ -27,9 +27,7 @@ export const generateWallet = async () => {
     const publicKey = bs58.encode(keypair.publicKey);
     const secretKey = bs58.encode(keypair.secretKey);
 
-    // Step 6: Store keys securely
-    // await SecureStore.setItemAsync("wallet_publicKey", publicKey);
-    // await SecureStore.setItemAsync("wallet_secretKey", secretKey);
+    await SecureStore.setItemAsync("wallet_count","1");
 
     // Step 7: Return values
     return {

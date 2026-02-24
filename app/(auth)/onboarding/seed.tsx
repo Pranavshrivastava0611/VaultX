@@ -31,7 +31,6 @@ export default function SeedScreen() {
             <Text style={styles.title}>
               {warning ? '⚠️ Important Warning' : '🔐 Your Seed Phrase'}
             </Text>
-
             <Card style={styles.card}>
               <Card.Content>
                 {warning ? (
